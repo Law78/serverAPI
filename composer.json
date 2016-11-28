@@ -1,0 +1,16 @@
+{
+  "name": "server-rest",
+  "description": "Simple REST API",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Lorenzo Franceschini",
+      "email": "l.franceschini@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ServerAPI\\": "src/"
+    }
+  }
+}
