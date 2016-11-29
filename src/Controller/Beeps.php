@@ -13,21 +13,37 @@ Class Beeps {
 		6 => 'OnePlus 2');
 		
 
-  public function __constructor__(){
-    //echo 'Eccomi';
+  public function __construct($params){
+    echo 'Costruttore!';
+    if(isset($params['id'])){
+      $this->id = $params['id'];
+    }
   }
 	
   public function get(){
-		//echo 'Metodo GET di BEEPS';
-    
+		echo 'Metodo GET di BEEPS';
+    if(isset($this->id)){
+      foreach($this->list as $key => $value){
+        //echo $key. ' - ' . $value;
+        if($key == $this->id){
+          $oggetto = $this->list[$key];
+        }
+      }
+    } else {
+      $oggetto = $this->list;
+    }
+
     $data['created'] = 'Oggi';
     $data['autore'] = 'Lorenzo';
-    $data['list'] = $this->list;
+    $data['list'] = $oggetto; //$this->list;
+    //var_dump($data);
+    //die;
     return $data;
 	}
 
   public function index(){
-		$this->get();
+    echo 'Metodo INDEX di BEEPS';
+		return $this->get();
 	}
 
 }

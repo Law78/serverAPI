@@ -27,15 +27,19 @@ class Router {
   public function add($route, $params = [], $method = 'GET'){
     // Cerco una / e la trasformo in \/
     //echo('<br/>'.$route);
+    //echo $route;
     $route = preg_replace('/\//','\\/', $route);
-    //$route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route);
-    //$route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route);
-    $route = preg_replace('/\{(id+)\}/', '(?P<\2>[0-9]+)', $route);
+    $route = preg_replace('/\{([a-z]+)\}/', '(?P<\1>[a-z-]+)', $route);
+    $route = preg_replace('/\{([a-z]+):([^\}]+)\}/', '(?P<\1>\2)', $route);
+    //$route = preg_replace('/\{(id+)\}/', '(?P<\1>\2[0-9]+)', $route);
     //echo preg_match('/\{(id+)\}/', $route);
+    //$route = preg_replace('/([a-z]+)/', '(?P<\1>[a-z-]+)', $route);
+
     //$route = preg_replace('/\{([a-z]+)\}/', 'fottiti', $route);
     //echo '<br/>pre: ' . $route;
     $route = '/^' . $method . $route . '$/i';
-    //echo '<br/>convertita in: ' . $route;
+    
+    //echo 'convertita in: ' . $route;
     //echo preg_match('/\/[a-z]+\/[a-z]+/', $route);
     $this->routes[$route] = $params;
   }
@@ -51,9 +55,9 @@ class Router {
    
     foreach ($this->routes as $route => $params){
       if(preg_match($route, $url, $matches)){
-        foreach($matches as $key => $value){
+        foreach($matches as $key => $match){
           if(is_string($key)){
-            $param[$key] = $match;
+            $params[$key] = $match;
           }
         }
         $this->params = $params;
@@ -71,6 +75,7 @@ class Router {
   */
   public function dispatch($url){
     if($this->match($url)){
+      var_dump($this->params);
       $controller = $this->params['controller'];
       $controller = $this->convertToStudlyCaps($controller);
       $controller = $this->getNamespace() . $controller;
@@ -85,8 +90,10 @@ class Router {
         
         
         $action = $this->convertToCamelCase($action);
+
         if (is_callable([$controller_object, $action])) {
-          return $controller_object->$action();
+          $res = $controller_object->$action();
+          return $res;
         } else {
           throw new ApiException(405, ['Metodo non presente']);        }
       } else {
